@@ -35,7 +35,13 @@ class DashboardScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              Text('Recent orders', style: Theme.of(context).textTheme.titleMedium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Recent orders', style: Theme.of(context).textTheme.titleMedium),
+                  TextButton(onPressed: () => context.push('/orders'), child: const Text('View all')),
+                ],
+              ),
               const SizedBox(height: 8),
               ...orders.map((o) {
                 final order = o as Map<String, dynamic>;

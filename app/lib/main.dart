@@ -7,10 +7,13 @@ import 'providers/app_providers.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/lifecycle_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/orders_list_screen.dart';
+import 'screens/signup_screen.dart';
 import 'screens/smart_booking_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  initPushRegistration();
   runApp(const ProviderScope(child: MerchantApp()));
 }
 
@@ -23,17 +26,19 @@ class MerchantApp extends ConsumerWidget {
       initialLocation: '/login',
       redirect: (context, state) {
         final user = ref.read(authStateProvider).value;
-        final loggingIn = state.matchedLocation == '/login';
+        final loggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/signup';
         if (user == null && !loggingIn) return '/login';
         if (user != null && loggingIn) return '/';
         return null;
       },
       routes: [
         GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+        GoRoute(path: '/signup', builder: (_, __) => const SignupScreen()),
         ShellRoute(
           builder: (_, __, child) => MerchantShell(child: child),
           routes: [
             GoRoute(path: '/', builder: (_, __) => const DashboardScreen()),
+            GoRoute(path: '/orders', builder: (_, __) => const OrdersListScreen()),
             GoRoute(path: '/book', builder: (_, __) => const SmartBookingScreen()),
             GoRoute(
               path: '/orders/:id',
@@ -67,11 +72,14 @@ class MerchantShell extends StatelessWidget {
             case 0:
               context.go('/');
             case 1:
+              context.go('/orders');
+            case 2:
               context.go('/book');
           }
         },
         destinations: const [
           NavigationDestination(icon: Icon(Icons.dashboard_outlined), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.list_alt_outlined), label: 'Orders'),
           NavigationDestination(icon: Icon(Icons.add_box_outlined), label: 'Book'),
         ],
       ),
@@ -80,7 +88,8 @@ class MerchantShell extends StatelessWidget {
 
   int _index(BuildContext context) {
     final loc = GoRouterState.of(context).uri.path;
-    if (loc.startsWith('/book')) return 1;
+    if (loc.startsWith('/orders')) return 1;
+    if (loc.startsWith('/book')) return 2;
     return 0;
   }
 }

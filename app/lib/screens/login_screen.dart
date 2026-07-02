@@ -13,16 +13,25 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _email = TextEditingController(text: 'merchant@velo.pk');
-  final _password = TextEditingController(text: 'password');
+  final _formKey = GlobalKey<FormState>();
+  final _phone = TextEditingController();
+  final _password = TextEditingController();
   bool _loading = false;
 
   Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
     setState(() => _loading = true);
     try {
-      await ref.read(authRepoProvider).login(_email.text, _password.text);
+      await ref.read(authRepoProvider).login(_phone.text.trim(), _password.text, app: 'merchant');
       ref.invalidate(authStateProvider);
       if (mounted) context.go('/');
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red.shade700),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -40,22 +49,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 40),
-              Text('ShipMate', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.primary)),
-              const Text('Merchant & Supplier Logistics'),
-              const SizedBox(height: 32),
-              TextField(controller: _email, decoration: const InputDecoration(labelText: 'Email')),
-              const SizedBox(height: 12),
-              TextField(controller: _password, obscureText: true, decoration: const InputDecoration(labelText: 'Password')),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _loading ? null : _submit,
-                child: Text(_loading ? 'Signing in…' : 'Sign in'),
-              ),
-            ],
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                Text('ShipMate', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                const Text('Merchant & Supplier Logistics'),
+                const SizedBox(height: 32),
+                TextFormField(
+                  controller: _phone,
+                  keyboardType: TextInputType.phone,
+                  decoration: const InputDecoration(
+                    labelText: 'Phone number',
+                    hintText: '03007654321',
+                  ),
+                  validator: FormValidators.phone,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _password,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'Password'),
+                  validator: (v) => FormValidators.required(v, field: 'Password'),
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: _loading ? null : _submit,
+                  child: Text(_loading ? 'Signing in…' : 'Sign in'),
+                ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => context.go('/signup'),
+                  child: const Text('New merchant? Create account'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
