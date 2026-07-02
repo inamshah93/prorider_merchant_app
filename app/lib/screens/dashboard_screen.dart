@@ -34,6 +34,31 @@ class DashboardScreen extends ConsumerWidget {
                   Expanded(child: _StatCard(title: 'Payables', value: '₨ ${data['account_payables']}')),
                 ],
               ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(child: _StatCard(title: 'Total orders', value: '${data['total_orders'] ?? 0}')),
+                  const SizedBox(width: 12),
+                  Expanded(child: _StatCard(title: 'Delivered (all time)', value: '${data['total_delivered'] ?? 0}')),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Card(
+                color: AppTheme.primary.withValues(alpha: 0.06),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Lifetime COD delivered', style: TextStyle(color: Colors.black54)),
+                      Text(
+                        '₨ ${data['lifetime_cod_delivered'] ?? '0'}',
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
