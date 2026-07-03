@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:velo_core/velo_core.dart';
 
 import '../providers/app_providers.dart';
@@ -32,6 +33,12 @@ class _LifecycleScreenState extends ConsumerState<LifecycleScreen> {
     await _load();
   }
 
+  Future<void> _shareLabel() async {
+    final res = await ref.read(apiProvider).get('/merchant/orders/${widget.orderId}/label');
+    final data = (res.data as Map)['data'] as Map<String, dynamic>;
+    await Share.share(data['label_text']?.toString() ?? 'Shipping label');
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_order == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -46,6 +53,10 @@ class _LifecycleScreenState extends ConsumerState<LifecycleScreen> {
         children: [
           _StepTile(title: 'Order created', done: true),
           _StepTile(title: 'Label printed', done: prep != 'created', action: prep == 'created' ? () => _action('generate-label') : null),
+          if (prep != 'created' && _order!['awb_number'] != null) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(onPressed: _shareLabel, icon: const Icon(Icons.share_outlined), label: const Text('Share / print label')),
+          ],
           _StepTile(title: 'Packed', done: prep == 'packed' || prep == 'label_generated' && status != 'created', action: prep == 'label_generated' ? () => _action('mark-packed') : null),
           _StepTile(title: 'Ready to ship', done: status != 'created', action: null),
           if (prep == 'packed' && status == 'created') ...[

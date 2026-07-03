@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:velo_core/velo_core.dart';
 
 import 'providers/app_providers.dart';
+import 'screens/catalog_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/lifecycle_screen.dart';
 import 'screens/login_screen.dart';
@@ -40,6 +41,7 @@ class MerchantApp extends ConsumerWidget {
             GoRoute(path: '/', builder: (_, __) => const DashboardScreen()),
             GoRoute(path: '/orders', builder: (_, __) => const OrdersListScreen()),
             GoRoute(path: '/book', builder: (_, __) => const SmartBookingScreen()),
+            GoRoute(path: '/catalog', builder: (_, __) => const CatalogScreen()),
             GoRoute(
               path: '/orders/:id',
               builder: (_, state) => LifecycleScreen(orderId: int.parse(state.pathParameters['id']!)),
@@ -75,12 +77,15 @@ class MerchantShell extends StatelessWidget {
               context.go('/orders');
             case 2:
               context.go('/book');
+            case 3:
+              context.go('/catalog');
           }
         },
         destinations: const [
           NavigationDestination(icon: Icon(Icons.dashboard_outlined), label: 'Home'),
           NavigationDestination(icon: Icon(Icons.list_alt_outlined), label: 'Orders'),
           NavigationDestination(icon: Icon(Icons.add_box_outlined), label: 'Book'),
+          NavigationDestination(icon: Icon(Icons.inventory_2_outlined), label: 'Catalog'),
         ],
       ),
     );
@@ -90,6 +95,7 @@ class MerchantShell extends StatelessWidget {
     final loc = GoRouterState.of(context).uri.path;
     if (loc.startsWith('/orders')) return 1;
     if (loc.startsWith('/book')) return 2;
+    if (loc.startsWith('/catalog')) return 3;
     return 0;
   }
 }
