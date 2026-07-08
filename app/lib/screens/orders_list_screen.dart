@@ -73,7 +73,7 @@ class _OrdersListScreenState extends ConsumerState<OrdersListScreen> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: _status.isEmpty ? null : _status,
+                initialValue: _status.isEmpty ? null : _status,
                 decoration: const InputDecoration(labelText: 'Status'),
                 items: const [
                   DropdownMenuItem(value: null, child: Text('All statuses')),

@@ -36,38 +36,58 @@ class _SmartBookingScreenState extends ConsumerState<SmartBookingScreen> {
 
         return SafeArea(
           child: ListView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             children: [
               Text('Smart booking', style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 12),
               ...items.map((item) {
                 final m = item as Map<String, dynamic>;
                 final sku = m['sku'] as String;
-                return Card(
-                  child: ListTile(
-                    title: Text(m['name'] ?? ''),
-                    subtitle: Text('₨ ${m['price']}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(onPressed: () => setState(() => _qty[sku] = ((_qty[sku] ?? 0) - 1).clamp(0, 99)), icon: const Icon(Icons.remove)),
-                        Text('${_qty[sku]}'),
-                        IconButton(onPressed: () => setState(() => _qty[sku] = (_qty[sku] ?? 0) + 1), icon: const Icon(Icons.add)),
-                      ],
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(m['name'] ?? ''),
+                      subtitle: Text('₨ ${m['price']}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(onPressed: () => setState(() => _qty[sku] = ((_qty[sku] ?? 0) - 1).clamp(0, 99)), icon: const Icon(Icons.remove)),
+                          Text('${_qty[sku]}'),
+                          IconButton(onPressed: () => setState(() => _qty[sku] = (_qty[sku] ?? 0) + 1), icon: const Icon(Icons.add)),
+                        ],
+                      ),
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 16),
-              TextField(controller: _customerName, decoration: const InputDecoration(labelText: 'Customer name')),
-              TextField(controller: _customerPhone, decoration: const InputDecoration(labelText: 'Phone')),
-              TextField(controller: _address, decoration: const InputDecoration(labelText: 'Address')),
-              TextField(controller: _city, decoration: const InputDecoration(labelText: 'City')),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => _confirm(api, items),
-                child: const Text('Confirm booking'),
+              const SizedBox(height: 8),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text('Customer details', style: Theme.of(context).textTheme.titleMedium),
+                      const SizedBox(height: 12),
+                      TextField(controller: _customerName, decoration: const InputDecoration(labelText: 'Customer name')),
+                      const SizedBox(height: 12),
+                      TextField(controller: _customerPhone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Phone')),
+                      const SizedBox(height: 12),
+                      TextField(controller: _address, decoration: const InputDecoration(labelText: 'Address')),
+                      const SizedBox(height: 12),
+                      TextField(controller: _city, decoration: const InputDecoration(labelText: 'City')),
+                      const SizedBox(height: 16),
+                      FilledButton(
+                        onPressed: () => _confirm(api, items),
+                        child: const Text('Confirm booking'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+              const SizedBox(height: 16),
             ],
           ),
         );

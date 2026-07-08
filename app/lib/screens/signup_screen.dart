@@ -78,9 +78,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               const SizedBox(height: 12),
               TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Phone')),
               const SizedBox(height: 12),
-              TextField(controller: _password, obscureText: true, decoration: const InputDecoration(labelText: 'Password')),
+              PasswordField(controller: _password),
               const SizedBox(height: 12),
-              TextField(controller: _confirm, obscureText: true, decoration: const InputDecoration(labelText: 'Confirm password')),
+              PasswordField(controller: _confirm, labelText: 'Confirm password'),
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: _loading ? null : _submit,

@@ -55,7 +55,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40),
-                Text('ShipMate', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                const ProRiderLogo(size: 72),
+                const SizedBox(height: 16),
+                Text('ProRider Merchant', style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold, color: AppTheme.primary)),
                 const Text('Merchant & Supplier Logistics'),
                 const SizedBox(height: 32),
                 TextFormField(
@@ -68,10 +70,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   validator: FormValidators.phone,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
+                PasswordField(
                   controller: _password,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
                   validator: (v) => FormValidators.required(v, field: 'Password'),
                 ),
                 const SizedBox(height: 24),

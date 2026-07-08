@@ -5,6 +5,6 @@ import 'package:prorider_merchant_app/main.dart';
 void main() {
   testWidgets('Merchant app smoke test', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: MerchantApp()));
-    expect(find.text('ShipMate'), findsOneWidget);
+    expect(find.text('ProRider Merchant'), findsOneWidget);
   });
 }

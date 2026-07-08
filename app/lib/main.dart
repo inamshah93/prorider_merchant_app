@@ -52,7 +52,7 @@ class MerchantApp extends ConsumerWidget {
     );
 
     return MaterialApp.router(
-      title: 'ShipMate Merchant',
+      title: 'ProRider Merchant',
       theme: AppTheme.light(),
       routerConfig: router,
     );

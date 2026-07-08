@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:velo_core/velo_core.dart';
 
 import '../providers/app_providers.dart';
 
@@ -82,33 +81,55 @@ class _CatalogScreenState extends ConsumerState<CatalogScreen> {
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               children: [
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextField(controller: _name, decoration: const InputDecoration(labelText: 'Product name')),
-                        TextField(controller: _sku, decoration: const InputDecoration(labelText: 'SKU (optional)')),
-                        Row(
-                          children: [
-                            Expanded(child: TextField(controller: _price, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Price'))),
-                            const SizedBox(width: 8),
-                            Expanded(child: TextField(controller: _weight, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'Weight kg'))),
-                          ],
-                        ),
                         const SizedBox(height: 12),
+                        TextField(controller: _sku, decoration: const InputDecoration(labelText: 'SKU (optional)')),
+                        const SizedBox(height: 12),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            if (constraints.maxWidth < 360) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextField(controller: _price, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Price')),
+                                  const SizedBox(height: 12),
+                                  TextField(controller: _weight, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Weight kg')),
+                                ],
+                              );
+                            }
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: TextField(controller: _price, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Price'))),
+                                const SizedBox(width: 12),
+                                Expanded(child: TextField(controller: _weight, keyboardType: const TextInputType.numberWithOptions(decimal: true), decoration: const InputDecoration(labelText: 'Weight kg'))),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
                         FilledButton(onPressed: _addItem, child: const Text('Add item')),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                ..._items.asMap().entries.map((e) => Card(
-                      child: ListTile(
-                        title: Text(e.value['name']?.toString() ?? 'Item'),
-                        subtitle: Text('SKU ${e.value['sku']} · ₨${e.value['price']} · ${e.value['weight']}kg'),
-                        trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => _remove(e.key)),
+                ..._items.asMap().entries.map((e) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Card(
+                        child: ListTile(
+                          title: Text(e.value['name']?.toString() ?? 'Item'),
+                          subtitle: Text('SKU ${e.value['sku']} · ₨${e.value['price']} · ${e.value['weight']}kg'),
+                          trailing: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () => _remove(e.key)),
+                        ),
                       ),
                     )),
               ],
